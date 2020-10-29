@@ -1,0 +1,78 @@
+﻿@page "/addperson"
+@using DNPAssignment23.Models;
+@using DNPAssignment23.Data;
+@using DNPAssignment23.Persistence;
+@inject IPersonService PersonService
+@inject NavigationManager NavigationManager  
+
+@attribute  [Authorize(Policy = "SecurityLevel1")]
+
+<h3>AddPerson</h3>
+
+<EditForm Model="@newAdult" OnValidSubmit="@AddNewPerson">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <AuthorizeView Context="AuthContext">
+        <div class="form-group">
+            @if (int.Parse(@AuthContext.User.FindFirst(claim => claim.Type.Equals("Level")).Value) >= 4)
+            {
+                <p>User Id:<br /></p>
+                <InputNumber @bind-Value="newAdult.Id"></InputNumber>
+            }
+            else
+            {
+                newAdult.Id = int.Parse(AuthContext.User.FindFirst(claim => claim.Type.Equals("UserID")).Value);
+            }
+        </div>
+    </AuthorizeView>
+    <div class="form-group">
+        First Name:<br />
+        <InputTextArea rows="1" @bind-Value="newAdult.FirstName"></InputTextArea>
+    </div>
+    <div class="form-group">
+        Last Name:<br />
+        <InputTextArea rows="1" @bind-Value="newAdult.LastName"></InputTextArea>
+    </div>
+    <div class="form-group">
+        Age:<br />
+        <InputNumber rows="1" @bind-Value="newAdult.Age"></InputNumber>
+    </div>
+    <div class="form-group">
+        Sex:<br />
+        <InputTextArea rows="1" @bind-Value="newAdult.Sex"></InputTextArea>
+    </div>
+    <div class="form-group">
+        Job Title:<br />
+        <InputTextArea rows="1" @bind-Value="newAdult.JobTitle"></InputTextArea>
+    </div>
+    <div class="form-group">
+        Haircolor:<br />
+        <InputTextArea rows="1" @bind-Value="newAdult.HairColor"></InputTextArea>
+    </div>
+    <div class="form-group">
+        Eyecolor:<br />
+        <InputTextArea rows="1" @bind-Value="newAdult.EyeColor"></InputTextArea>
+    </div>
+    <div class="form-group">
+        Weight:<br />
+        <InputNumber rows="1" @bind-Value="newAdult.Weight"></InputNumber>
+    </div>
+    <div class="form-group">
+        Height:<br />
+        <InputNumber rows="1" @bind-Value="newAdult.Height"></InputNumber>
+    </div>
+
+    <p class="actions">
+        <button class="btn btn-outline-dark" type="submit">Create</button>
+    </p>
+</EditForm>
+
+@code {
+    private Adult newAdult = new Adult();
+
+    private void AddNewPerson()
+    {
+        PersonService.AddPerson(newAdult);
+        NavigationManager.NavigateTo("/people");
+    }
+}

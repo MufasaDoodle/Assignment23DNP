@@ -1,0 +1,165 @@
+﻿@page "/people"
+@using DNPAssignment23.Data;
+@using DNPAssignment23.Models;
+@using DNPAssignment23.Persistence;
+
+@inject IPersonService PersonService
+
+<h3>Adults</h3>
+
+<p>
+    Filter by first name: <input type="text" @oninput="@((arg) => FilterByFirstName(arg))" style="width:150px" />
+</p>
+<p>
+    Filter by last name: <input type="text" @oninput="@((arg) => FilterByLastName(arg))" style="width:150px" />
+</p>
+<p>
+    Filter by age: <input type="number" @oninput="@((arg) => FilterByAge(arg))" style="width:50px" />
+</p>
+
+@if (allAdults == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else if (!allAdults.Any())
+{
+    <p>
+        <em>No items exist. Start by adding some</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <AuthorizeView Policy="SecurityLevel3">
+                    <th>User ID</th>
+                </AuthorizeView>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Age</th>
+                <th>Sex</th>
+                <th>Job Title</th>
+                <th>Haircolor</th>
+                <th>Eyecolor</th>
+                <th>Weight</th>
+                <th>Height</th>
+                <AuthorizeView Policy="SecurityLevel3">
+                    <th>Remove</th>
+                </AuthorizeView>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var adult in adultsToShow)
+            {
+                <tr>
+                    <AuthorizeView Policy="SecurityLevel3">
+                        <td>@adult.Id</td>
+                    </AuthorizeView>
+                    <td>@adult.FirstName</td>
+                    <td>@adult.LastName</td>
+                    <td>@adult.Age</td>
+                    <td>@adult.Sex</td>
+                    <td>@adult.JobTitle</td>
+                    <td>@adult.HairColor</td>
+                    <td>@adult.EyeColor</td>
+                    <td>@adult.Weight</td>
+                    <td>@adult.Height</td>
+                    <AuthorizeView Policy="SecurityLevel3">
+                        <td>
+                            <button @onclick="@(() => RemoveAdult(adult.Id))">
+                                <i class="oi oi-trash" style="color:red"></i>
+                            </button>
+                        </td>
+                    </AuthorizeView>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IList<Adult> adultsToShow;
+    private IList<Adult> allAdults;
+
+#nullable enable
+    private string? filterByFirstName;
+#nullable enable
+    private string? filterByLastName;
+    private int? filterByAge;
+
+    private void FilterByFirstName(ChangeEventArgs args)
+    {
+        filterByFirstName = null;
+        try
+        {
+            filterByFirstName = args.Value.ToString();
+        }
+        catch (Exception e)
+        {
+
+        }
+        ExecuteFilter();
+    }
+
+    private void FilterByLastName(ChangeEventArgs args)
+    {
+        filterByLastName = null;
+        try
+        {
+            filterByLastName = args.Value.ToString();
+        }
+        catch (Exception e)
+        {
+
+        }
+        ExecuteFilter();
+    }
+
+    private void FilterByAge(ChangeEventArgs args)
+    {
+        filterByAge = null;
+        try
+        {
+            filterByAge = int.Parse(args.Value.ToString());
+        }
+        catch (Exception e)
+        {
+
+        }
+        ExecuteFilter();
+    }
+
+    private void ExecuteFilter()
+    {
+        if (filterByFirstName != null && filterByFirstName.Equals(""))
+        {
+            filterByFirstName = null;
+        }
+        if (filterByLastName != null && filterByLastName.Equals(""))
+        {
+            filterByLastName = null;
+        }
+
+        adultsToShow = allAdults.Where(t =>
+    (filterByFirstName != null && t.FirstName.Equals(filterByFirstName) || filterByFirstName == null) &&
+    (filterByLastName != null && t.LastName.Equals(filterByLastName) || filterByLastName == null) &&
+    (filterByAge != null && t.Age == filterByAge || filterByAge == null)
+    ).ToList();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        allAdults = await PersonService.GetPeople();
+        adultsToShow = allAdults;
+    }
+
+    private void RemoveAdult(int adultID)
+    {
+        Adult adultToRemove = allAdults.First(t => t.Id == adultID);
+        PersonService.RemovePerson(adultID);
+        allAdults.Remove(adultToRemove);
+    }
+}
