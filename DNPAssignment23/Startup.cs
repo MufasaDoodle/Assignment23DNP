@@ -31,7 +31,7 @@ namespace DNPAssignment23
             services.AddServerSideBlazor();
             //services.AddSingleton<IPersonService, PersonService>();
             services.AddSingleton<IPersonService, CloudAdultService>();
-            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserService, CloudUserService>();
             services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 
             services.AddAuthorization(options =>

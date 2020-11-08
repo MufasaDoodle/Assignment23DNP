@@ -8,13 +8,17 @@
 <h3>Adults</h3>
 
 <p>
-    Filter by first name: <input type="text" @oninput="@((arg) => FilterByFirstName(arg))" style="width:150px" />
+    Filter by first name: <input type="text" @bind="filterByFirstName" style="width:150px" />
 </p>
 <p>
-    Filter by last name: <input type="text" @oninput="@((arg) => FilterByLastName(arg))" style="width:150px" />
+    Filter by last name: <input type="text" @bind="filterByLastName" style="width:150px" />
 </p>
 <p>
-    Filter by age: <input type="number" @oninput="@((arg) => FilterByAge(arg))" style="width:50px" />
+    Filter by age: <input type="number" @bind="filterByAge" style="width:50px" />
+</p>
+
+<p>
+    <button class="btn btn-outline" type="submit" @onclick="ExecuteFilter">Search</button>
 </p>
 
 @if (allAdults == null)
@@ -90,6 +94,7 @@ else
     private string? filterByLastName;
     private int? filterByAge;
 
+    /*
     private void FilterByFirstName(ChangeEventArgs args)
     {
         filterByFirstName = null;
@@ -118,6 +123,7 @@ else
         ExecuteFilter();
     }
 
+
     private void FilterByAge(ChangeEventArgs args)
     {
         filterByAge = null;
@@ -131,8 +137,9 @@ else
         }
         ExecuteFilter();
     }
+    */
 
-    private void ExecuteFilter()
+    private async Task ExecuteFilter()
     {
         if (filterByFirstName != null && filterByFirstName.Equals(""))
         {
@@ -142,17 +149,26 @@ else
         {
             filterByLastName = null;
         }
+        if(filterByAge < 0)
+        {
+            filterByAge = null;
+        }
 
+        allAdults = await PersonService.GetPeople(filterByFirstName, filterByLastName, filterByAge);
+        adultsToShow = allAdults;
+
+        /*
         adultsToShow = allAdults.Where(t =>
     (filterByFirstName != null && t.FirstName.Equals(filterByFirstName) || filterByFirstName == null) &&
     (filterByLastName != null && t.LastName.Equals(filterByLastName) || filterByLastName == null) &&
     (filterByAge != null && t.Age == filterByAge || filterByAge == null)
     ).ToList();
+        */
     }
 
     protected override async Task OnInitializedAsync()
     {
-        allAdults = await PersonService.GetPeople();
+        allAdults = await PersonService.GetPeople(null, null, null);
         adultsToShow = allAdults;
     }
 

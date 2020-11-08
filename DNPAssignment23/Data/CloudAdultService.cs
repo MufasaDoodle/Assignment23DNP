@@ -12,14 +12,15 @@ namespace DNPAssignment23.Data
     public class CloudAdultService : IPersonService
     {
         HttpClient client;
-        string url1 = "http://dnp.metamate.me/Adults/";
+        string uri1 = "http://dnp.metamate.me/Adults/";
+        string uri2 = "https://localhost:44339/adults/";
 
         public CloudAdultService()
         {
             client = new HttpClient();
         }
 
-        public async Task AddPerson(Adult person)
+        public async Task AddPersonAsync(Adult person)
         {
             string adultSerialized = JsonSerializer.Serialize(person);
 
@@ -29,23 +30,82 @@ namespace DNPAssignment23.Data
                 "application/json"
                 );
 
-            await client.PutAsync($"{url1}", content);
+            await client.PostAsync($"{uri2}", content);
         }
 
-        public async Task<IList<Adult>> GetPeople()
+        public async Task<IList<Adult>> GetPeopleAsync(string firstName, string lastName, int? age)
         {
-            Task<string> stringAsync = client.GetStringAsync($"{url1}");
-            string message = await stringAsync;
+            string message = "";
+            string uri = uri2;
+            bool temp = false;
+
+            if(firstName != null)
+            {
+                if(temp == false)
+                {
+                    uri += "?";
+                    temp = true;
+                }
+                else
+                {
+                    uri += "&";
+                }
+                uri += $"firstName={firstName}";
+            }
+
+            if(lastName != null)
+            {
+                if (temp == false)
+                {
+                    uri += "?";
+                    temp = true;
+                }
+                else
+                {
+                    uri += "&";
+                }
+                uri += $"lastName={lastName}";
+            }
+
+            if(age != null)
+            {
+                if (temp == false)
+                {
+                    uri += "?";
+                    temp = true;
+                }
+                else
+                {
+                    uri += "&";
+                }
+                uri += $"age={age}";
+            }
+
+            Console.WriteLine(uri);
+            message = await client.GetStringAsync(uri);
             List<Adult> result = JsonSerializer.Deserialize<List<Adult>>(message);
             return result;
         }
 
-        public async Task RemovePerson(int personID)
+        public async Task<Adult> GetAdultByIdAsync(int id)
         {
-            await client.DeleteAsync($"{url1}{personID}");
+            string message = await client.GetStringAsync(uri2 + "?id=" + id);
+
+            List<Adult> temp = JsonSerializer.Deserialize<List<Adult>>(message);
+            Adult returnList = new Adult();
+            for (int i = 0; i < 1; i++)
+            {
+                returnList = temp.First();
+            }
+            return returnList;
         }
 
-        public async Task UpdatePerson(Adult person)
+        public async Task RemovePersonAsync(int personID)
+        {
+            await client.DeleteAsync($"{uri2}{personID}");
+        }
+
+        public async Task UpdatePersonAsync(Adult person)
         {
             string adultSerialized = JsonSerializer.Serialize(person);
 
@@ -54,7 +114,7 @@ namespace DNPAssignment23.Data
                 Encoding.UTF8,
                 "application/json"
                 );
-            await client.PatchAsync($"{url1}{person.Id}", content);
+            await client.PatchAsync($"{uri2}{person.Id}", content);
         }
     }
 }

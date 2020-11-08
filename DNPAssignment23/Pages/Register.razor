@@ -60,7 +60,7 @@
         {
             newUser.Password = password;
 
-            UsersService.AddUser(newUser);
+            UsersService.AddUserAsync(newUser);
             NavigationManager.NavigateTo("/Login");
         }
     }

@@ -16,7 +16,7 @@ namespace DNPAssignment23.Data
             fileContext = new FileContext();
         }
 
-        public async Task AddPerson(Adult person)
+        public async Task AddPersonAsync(Adult person)
         {
             int max;
             try
@@ -36,20 +36,25 @@ namespace DNPAssignment23.Data
 
         }
 
-        public async Task<IList<Adult>> GetPeople()
+        public async Task<IList<Adult>> GetPeopleAsync(string firstName, string lastName, int? age)
         {
             List<Adult> temp = new List<Adult>(fileContext.Adults);
             return temp;
         }
 
-        public async Task RemovePerson(int personID)
+        public async Task<Adult> GetAdultByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task RemovePersonAsync(int personID)
         {
             Adult toRemove = fileContext.Adults.First(t => t.Id == personID);
             fileContext.Adults.Remove(toRemove);
             fileContext.SaveChanges();
         }
 
-        public async Task UpdatePerson(Adult person)
+        public async Task UpdatePersonAsync(Adult person)
         {
             Adult toUpdate = fileContext.Adults.First(t => t.Id == person.Id);
             toUpdate.JobTitle = person.JobTitle;

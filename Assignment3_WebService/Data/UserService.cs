@@ -1,4 +1,4 @@
-﻿using DNPAssignment23.Models;
+﻿using Assignment3_WebService.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace DNPAssignment23.Data
+namespace Assignment3_WebService.Data
 {
     public class UserService : IUserService
     {
@@ -42,18 +42,19 @@ namespace DNPAssignment23.Data
             users = temp.ToList();
         }
 
-        public async Task AddUserAsync(User user)
+        public async Task<User> AddUserAsync(User user)
         {
             int max = users.Max(user => user.UserID);
             user.UserID = (++max);
             users.Add(user);
             WriteUsersToFile();
+            return user;
         }
 
-        public async Task UpdateUserAsync(User user)
+        public async Task<User> UpdateUserAsync(User user)
         {
             User toUpdate = users.FirstOrDefault(t => t.UserID == user.UserID);
-            if (toUpdate == null)
+            if(toUpdate == null)
             {
                 throw new Exception($"Did not find adult with ID: {user.UserID}");
             }
@@ -62,19 +63,15 @@ namespace DNPAssignment23.Data
             toUpdate.UserID = user.UserID;
             toUpdate.SecurityLevel = user.SecurityLevel;
             WriteUsersToFile();
+            return toUpdate;
         }
 
-        public async Task<User> ValidateUserAsync(string username, string password)
+        public async Task<User> ValidateUserAsync(string username)
         {
             User first = users.FirstOrDefault(user => user.UserName.Equals(username));
-            if(first == null)
+            if (first == null)
             {
                 throw new Exception("User not found");
-            }
-
-            if (!first.Password.Equals(password)) 
-            {
-                throw new Exception("Password is wrong");
             }
 
             return first;

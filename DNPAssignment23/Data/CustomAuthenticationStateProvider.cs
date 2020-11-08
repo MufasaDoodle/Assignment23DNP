@@ -44,7 +44,7 @@ namespace DNPAssignment23.Data
             return await Task.FromResult(new AuthenticationState(cachedClaimsPrincipal));
         }
 
-        public void ValidateLogin(string userName, string password)
+        public async Task ValidateLogin(string userName, string password)
         {
             Console.WriteLine("Validating user login");
             if (string.IsNullOrEmpty(userName))
@@ -59,7 +59,7 @@ namespace DNPAssignment23.Data
             ClaimsIdentity identity = new ClaimsIdentity();
             try
             {
-                User user = userService.ValidateUser(userName, password);
+                User user = await userService.ValidateUserAsync(userName, password);
                 identity = SetupClaimsForUser(user);
                 string serialisedData = JsonSerializer.Serialize(user);
                 jsRuntime.InvokeVoidAsync("sessionStorage.setItem", "currentUser", serialisedData);

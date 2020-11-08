@@ -8,9 +8,10 @@ namespace DNPAssignment23.Data
 {
     interface IPersonService
     {
-        Task <IList<Adult>> GetPeople();
-        Task AddPerson(Adult person);
-        Task RemovePerson(int personID);
-        Task UpdatePerson(Adult person);
+        Task <IList<Adult>> GetPeopleAsync(string firstName, string lastName, int? age);
+        Task<Adult> GetAdultByIdAsync(int id);
+        Task AddPersonAsync(Adult person);
+        Task RemovePersonAsync(int personID);
+        Task UpdatePersonAsync(Adult person);
     }
 }
