@@ -154,7 +154,7 @@ else
             filterByAge = null;
         }
 
-        allAdults = await PersonService.GetPeople(filterByFirstName, filterByLastName, filterByAge);
+        allAdults = await PersonService.GetPeopleAsync(filterByFirstName, filterByLastName, filterByAge);
         adultsToShow = allAdults;
 
         /*
@@ -168,14 +168,14 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        allAdults = await PersonService.GetPeople(null, null, null);
+        allAdults = await PersonService.GetPeopleAsync(null, null, null);
         adultsToShow = allAdults;
     }
 
     private void RemoveAdult(int adultID)
     {
         Adult adultToRemove = allAdults.First(t => t.Id == adultID);
-        PersonService.RemovePerson(adultID);
+        PersonService.RemovePersonAsync(adultID);
         allAdults.Remove(adultToRemove);
     }
 }

@@ -72,7 +72,7 @@
 
     private void AddNewPerson()
     {
-        PersonService.AddPerson(newAdult);
+        PersonService.AddPersonAsync(newAdult);
         NavigationManager.NavigateTo("/people");
     }
 }
