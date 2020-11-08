@@ -20,6 +20,11 @@ namespace Assignment3_WebService.Controllers
             this.userService = userService;
         }
 
+        /// <summary>
+        /// Retrieves a user with the given username
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<User>> GetUser([FromQuery] string userName)
         {
@@ -35,7 +40,16 @@ namespace Assignment3_WebService.Controllers
             }
         }
 
+        /// <summary>
+        /// Add a user from the given User object
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        /// <response code="201">Returns the created user</response>
+        /// <response code="400">The user is null</response>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<User>> AddUser([FromBody] User user)
         {
             if (!ModelState.IsValid)
@@ -54,6 +68,11 @@ namespace Assignment3_WebService.Controllers
             }
         }
 
+        /// <summary>
+        /// Update a user from the given User object
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         [HttpPatch]
         [Route("{id:int}")]
         public async Task<ActionResult<User>> UpdateUser([FromBody] User user)

@@ -22,6 +22,14 @@ namespace Assignment3_WebService.Controllers
             this.personService = personService;
         }
 
+        /// <summary>
+        /// Retrieves adults matching paramters
+        /// </summary>
+        /// <param name="firstName"></param>
+        /// <param name="lastName"></param>
+        /// <param name="age"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<IList<Adult>>> GetAdults
             (
@@ -43,6 +51,11 @@ namespace Assignment3_WebService.Controllers
             }
         }
 
+        /// <summary>
+        /// Deletes an adult with a given ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("{id:int}")]
         public async Task<ActionResult> DeleteAdult([FromRoute] int id)
@@ -59,7 +72,16 @@ namespace Assignment3_WebService.Controllers
             }
         }
 
+        /// <summary>
+        /// Adds an adult with the given Adult object
+        /// </summary>
+        /// <param name="adult"></param>
+        /// <returns></returns>
+        /// <response code="201">Returns the created adult</response>
+        /// <response code="400">The adult is null</response>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Adult>> AddAdult([FromBody] Adult adult)
         {
             if (!ModelState.IsValid)
@@ -78,6 +100,11 @@ namespace Assignment3_WebService.Controllers
             }
         }
 
+        /// <summary>
+        /// Updates an adult from the given Adult object
+        /// </summary>
+        /// <param name="adult"></param>
+        /// <returns></returns>
         [HttpPatch]
         [Route("{id:int}")]
         public async Task<ActionResult<Adult>> UpdateAdult([FromBody] Adult adult)
