@@ -30,8 +30,8 @@ namespace Assignment3_WebService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddSingleton<IPersonService, PersonService>();
-            services.AddSingleton<IUserService, UserService>();
+            services.AddSingleton<IPersonService, DatabasePersonService>();
+            services.AddSingleton<IUserService, DatabaseUserService>();
 
             services.AddSwaggerGen();
 
@@ -40,8 +40,8 @@ namespace Assignment3_WebService
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "DNP Assignment 3 Web API",
-                    Description = "Web API for DNP assignment 3"
+                    Title = "DNP Assignment 4 Web API",
+                    Description = "Web API for DNP assignment 4"
                 });
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
